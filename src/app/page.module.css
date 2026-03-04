@@ -1,0 +1,21 @@
+.page {
+  padding: 0 24px 48px;
+}
+
+.debugPanel {
+  width: 100%;
+  max-width: 540px;
+  margin: 0 auto;
+  /* border-top: 1px solid var(--wash1); */
+  padding-top: 16px;
+}
+
+.debugPanel summary {
+  cursor: pointer;
+  user-select: none;
+  color: var(--grey2);
+}
+
+.debugBody {
+  margin-top: 12px;
+}

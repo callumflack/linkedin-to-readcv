@@ -1,0 +1,297 @@
+{
+  "data": {
+    "linkedin.experience": {
+      "$schema": "https://raw.githubusercontent.com/vana-com/data-connectors/main/schemas/linkedin.experience.json",
+      "version": "1.0",
+      "scope": "linkedin.experience",
+      "collectedAt": "2026-03-04T09:38:07Z",
+      "data": {
+        "experiences": [
+          {
+            "companyName": "Vana",
+            "dates": "Oct 2025 - Present",
+            "description": "",
+            "jobTitle": "UI Designer + Design Engineer",
+            "location": ""
+          },
+          {
+            "companyName": "Patternworks",
+            "dates": "Mar 2024 - Present",
+            "description": "",
+            "jobTitle": "Design, Engineering & Listening",
+            "location": "Cairns, Queensland, Australia"
+          },
+          {
+            "companyName": "Vana",
+            "dates": "May 2022 - Feb 2024",
+            "description": "",
+            "jobTitle": "UI Engineer + Designer",
+            "location": "Remote"
+          },
+          {
+            "companyName": "Grade",
+            "dates": "Mar 2022 - May 2022",
+            "description": "",
+            "jobTitle": "UI Lead",
+            "location": "Cairns"
+          },
+          {
+            "companyName": "Cleared",
+            "dates": "Sep 2020 - Mar 2022",
+            "description": "Built the product from initial commit thru to acquisition",
+            "jobTitle": "Engineer lead & UI Designer",
+            "location": "Cairns, Queensland, Australia"
+          },
+          {
+            "companyName": "Callum Flack Design",
+            "dates": "Jul 2015 - Mar 2022",
+            "description": "Please visit: callumflack.design",
+            "jobTitle": "Web design & development",
+            "location": "Cairns, Australia"
+          },
+          {
+            "companyName": "AUM",
+            "dates": "Jul 2017 - Dec 2017",
+            "description": "AUM is a web platform for creating, publishing, and playing voice controlled audio games for the Google Home and other smart speakers.",
+            "jobTitle": "Cofounder, Chief Design Officer",
+            "location": "Cairns, Australia"
+          },
+          {
+            "companyName": "Ward6",
+            "dates": "Feb 2014 - Aug 2015",
+            "description": "After over a year in the Sydney office, I also worked as a full-time remote employee in Cairns.",
+            "jobTitle": "Senior digital designer & front-end developer",
+            "location": ""
+          },
+          {
+            "companyName": "Votary Records, Roundtable Records & Dual Planet Records",
+            "dates": "Oct 2009 - Jul 2014",
+            "description": "Brand identity, logo creation, packaging, editorial, emailers, web design. A discography of over 25 LPs. Each LP comes with with cover, vinyl labels, liner note brochure, cover sticker and digital marketing suite. All of which I directed, designed and produced in collaboration with the label owner.",
+            "jobTitle": "Art Director & Designer",
+            "location": "Melbourne"
+          },
+          {
+            "companyName": "Freelance",
+            "dates": "Mar 2013 - Feb 2014",
+            "description": "UX design, UI design and front-end development of/with:\n\n— Fluency (beamwallet.com site & emails redesign, under direction)\n— jervisretreat.com (responsive, designed, built and deployed in 3 days)\n— villagemelbourne.com.au (responsive, design and front-end; now revised by a 3rd party)\n— welend.hk (responsive, front-end only, large web app, part of a dev team, working remotely; now revised by a 3rd party)\n— ellisjones.com.au (design only)",
+            "jobTitle": "Senior digital designer & front-end developer (freelance)",
+            "location": "Melbourne & Sydney, Australia"
+          },
+          {
+            "companyName": "Ellis Jones",
+            "dates": "Jul 2012 - Mar 2013",
+            "description": "Graphic design, web design, user interface design, user experience design for a diverse range of clients across advertising, brand collateral, annual reports, marketing websites, and an iPad app. \n\nI managed projects, liaising with suppliers and freelancers, as well as working with clients throughout the conceptualisation, design and production process.\n\nI also redesigned the company website — both UX and UI — under direction from the owner/director: www.ellisjones.com.au\n\nAnd I wrote fortnightly blog posts about our work and the work processes and design thoughts.",
+            "jobTitle": "Senior graphic & digital designer",
+            "location": ""
+          },
+          {
+            "companyName": "Box+Dice",
+            "dates": "Jan 2010 - Feb 2012",
+            "description": "Began a freelance association by redesigning the brand logo suite, identity and website. Became inhouse designer for all business communications, transitioned into digital design by working within the agile software development team as web designer, user interface and user experience designer. Also worked with Dangerous Pixels designing the Box+Dice iOS app.",
+            "jobTitle": "Senior graphic & digital designer",
+            "location": "Albert Park, Melbourne"
+          },
+          {
+            "companyName": "Self-employed freelance",
+            "dates": "Aug 2007 - Dec 2010",
+            "description": "Independent design and direction, communications driven by craft. I also worked inhouse for Precinct, Sense Advertising, Merge Right, Lifelounge & Mullan Partners during this period. Worked within defined brand guidelines, fitted in with team situations.",
+            "jobTitle": "Senior graphic designer",
+            "location": ""
+          },
+          {
+            "companyName": "Small Studio",
+            "dates": "2009 - 2009",
+            "description": "Website UI designs.",
+            "jobTitle": "Midweight graphic designer (freelance)",
+            "location": "Melbourne, Victoria, Australia"
+          },
+          {
+            "companyName": "Precinct",
+            "dates": "2008 - 2009",
+            "description": "For specific projects on multiple occasions.",
+            "jobTitle": "Midweight graphic designer (freelance)",
+            "location": "Melbourne, Victoria, Australia"
+          },
+          {
+            "companyName": "Sense Advertising | Sense Digital",
+            "dates": "2008 - 2009",
+            "description": "For specific projects on multiple occasions.",
+            "jobTitle": "Midweight graphic designer (freelance)",
+            "location": ""
+          },
+          {
+            "companyName": "Saatchi & Saatchi Design London",
+            "dates": "2006 - 2007",
+            "description": "Highlights include Sagatiba 2007 outdoor campaign illustrations.",
+            "jobTitle": "Midweight graphic designer (freelance)",
+            "location": ""
+          },
+          {
+            "companyName": "Miller Bainbridge & Partners",
+            "dates": "Aug 2006 - Dec 2006",
+            "description": "'Below the line' agency, working as designer with creative team on direct mail, one-off campaign concepts, website design following brand styelguide for clients including Natwest, eBay, Toyota.",
+            "jobTitle": "Midweight graphic designer (freelance)",
+            "location": ""
+          },
+          {
+            "companyName": "Focus Consultancy",
+            "dates": "2003 - 2006",
+            "description": "Inhouse graphic designer for a multi-ethnic diversity management consultancy. Major client was The British Army. Focus Consultancy's remit was to increase the percentage of ethnic British in The British Army, which they did by community events. As designer, I looked after all design and direction for event advertising and collateral, including a quarterly 50 page magazine showcasing the stories of ethnic Brits in the Army.",
+            "jobTitle": "Graphic designer",
+            "location": ""
+          },
+          {
+            "companyName": "Australian Academic Press",
+            "dates": "2001 - 2001",
+            "description": "Design & typography for academic journals. Where I learnt the lost art of typesetting & the craft of typography by practise, practise, practise.",
+            "jobTitle": "Graphic designer",
+            "location": "Brisbane, Australia"
+          }
+        ]
+      }
+    },
+    "linkedin.education": {
+      "$schema": "https://raw.githubusercontent.com/vana-com/data-connectors/main/schemas/linkedin.education.json",
+      "version": "1.0",
+      "scope": "linkedin.education",
+      "collectedAt": "2026-03-04T09:38:06Z",
+      "data": {
+        "education": [
+          {
+            "degree": "Bachelor of Visual Arts in Graphic Design, Graphic Design",
+            "grade": "",
+            "logoUrl": "",
+            "schoolName": "Queensland College of Art, Griffith University (Morningside)",
+            "years": "1995 - 1998"
+          },
+          {
+            "degree": "",
+            "grade": "",
+            "logoUrl": "",
+            "schoolName": "Nudgee College, Brisbane",
+            "years": "1990 - 1994"
+          }
+        ]
+      }
+    },
+    "linkedin.skills": {
+      "$schema": "https://raw.githubusercontent.com/vana-com/data-connectors/main/schemas/linkedin.skills.json",
+      "version": "1.0",
+      "scope": "linkedin.skills",
+      "collectedAt": "2026-03-04T09:38:07Z",
+      "data": {
+        "skills": [
+          {
+            "endorsements": "",
+            "name": "Tailwind CSS"
+          },
+          {
+            "endorsements": "",
+            "name": "Vue.js"
+          },
+          {
+            "endorsements": "",
+            "name": "TypeScript"
+          },
+          {
+            "endorsements": "",
+            "name": "Web Application Development"
+          },
+          {
+            "endorsements": "",
+            "name": "Web Application Design"
+          },
+          {
+            "endorsements": "",
+            "name": "Product Design"
+          },
+          {
+            "endorsements": "",
+            "name": "Astro.js"
+          },
+          {
+            "endorsements": "",
+            "name": "React.js"
+          },
+          {
+            "endorsements": "",
+            "name": "Typography"
+          },
+          {
+            "endorsements": "",
+            "name": "Art Direction"
+          },
+          {
+            "endorsements": "",
+            "name": "User Interface Design"
+          },
+          {
+            "endorsements": "",
+            "name": "Graphic Design"
+          },
+          {
+            "endorsements": "",
+            "name": "Web Design"
+          },
+          {
+            "endorsements": "",
+            "name": "Creative Direction"
+          },
+          {
+            "endorsements": "",
+            "name": "User Experience Design"
+          },
+          {
+            "endorsements": "",
+            "name": "Illustration"
+          },
+          {
+            "endorsements": "",
+            "name": "Branding & Identity"
+          },
+          {
+            "endorsements": "",
+            "name": "Information Architecture"
+          },
+          {
+            "endorsements": "",
+            "name": "Drawing"
+          },
+          {
+            "endorsements": "",
+            "name": "Creative Strategy"
+          }
+        ]
+      }
+    },
+    "linkedin.languages": {
+      "$schema": "https://raw.githubusercontent.com/vana-com/data-connectors/main/schemas/linkedin.languages.json",
+      "version": "1.0",
+      "scope": "linkedin.languages",
+      "collectedAt": "2026-03-04T09:38:07Z",
+      "data": {
+        "languages": [
+          {
+            "name": "English",
+            "proficiency": ""
+          }
+        ]
+      }
+    },
+    "linkedin.profile": {
+      "$schema": "https://raw.githubusercontent.com/vana-com/data-connectors/main/schemas/linkedin.profile.json",
+      "version": "1.0",
+      "scope": "linkedin.profile",
+      "collectedAt": "2026-03-04T09:38:07Z",
+      "data": {
+        "about": "I am a frontend engineer with over a decade of experience. I am design oriented: prior to frontend, I worked over a decade in branding and graphic design. So I use code as a design tool. I love startups; prioritising mission orientation, user value, team synergy, work tempo, in that order. Thinking about AI.",
+        "connections": "",
+        "fullName": "Callum Flack",
+        "headline": "design + code",
+        "location": "Cairns North, Queensland, Australia",
+        "profilePictureUrl": "https://media.licdn.com/dms/image/v2/C4E03AQFx5MGH0JWROQ/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1534981698580?e=1774483200&v=beta&t=WxGluEB3uHIeqtYwXw1wr68hHfXH7Y81bHWCKyRw0Zg",
+        "profileUrl": "https://www.linkedin.com/in/callumflack/"
+      }
+    }
+  }
+}

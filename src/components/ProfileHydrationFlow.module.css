@@ -1,0 +1,119 @@
+.ctaBlock {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--wash1);
+  display: flex;
+  flex-direction: column;
+  row-gap: 6px;
+  align-items: flex-end;
+}
+
+.oneLineByline {
+  white-space: nowrap;
+}
+
+.primaryCta {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  width: fit-content;
+  border: none;
+  border-bottom: 1px solid transparent;
+  background: transparent;
+  color: var(--grey1);
+  font: inherit;
+  line-height: inherit;
+  cursor: pointer;
+  padding: 0;
+  text-align: right;
+}
+
+.primaryCta:hover {
+  border-bottom-color: currentColor;
+}
+
+.primaryCtaDisabled {
+  color: var(--grey2);
+  cursor: default;
+  min-width: 145px;
+}
+
+.primaryCtaDisabled:hover {
+  border-bottom-color: transparent;
+}
+
+.secondaryCta {
+  width: fit-content;
+  color: var(--grey2);
+  border-bottom: 1px solid var(--wash1);
+  text-align: right;
+}
+
+.cancelLink {
+  appearance: none;
+  border: none;
+  background: transparent;
+  padding: 0;
+  color: var(--grey3);
+  font: inherit;
+  line-height: inherit;
+  cursor: pointer;
+  border-bottom: 1px solid transparent;
+}
+
+.cancelLink:hover {
+  border-bottom-color: var(--wash1);
+}
+
+.ctaArrow {
+  display: inline-flex;
+  align-items: center;
+}
+
+.shell {
+  width: 100%;
+  max-width: 540px;
+  margin: 0 auto;
+  min-height: 65vh;
+  padding: clamp(24px, calc((100vw - 540px) / 2), 72px) 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  row-gap: 12px;
+}
+
+.stateTitle {
+  font-size: 28px;
+  font-weight: 350;
+  line-height: 1.25;
+}
+
+.stateBody {
+  color: var(--grey2);
+  max-width: 48ch;
+}
+
+.ctaButton {
+  margin-top: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  min-width: 220px;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  background: #22c55e;
+  color: #09090b;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+@media (max-width: 480px) {
+  .shell {
+    min-height: 50vh;
+  }
+}
