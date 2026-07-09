@@ -5,27 +5,62 @@ type LinkedInProfile = {
   about?: string;
   fullName?: string;
   headline?: string;
-  location?: string;
+  location?: unknown;
   profilePictureUrl?: string;
   profileUrl?: string;
 };
 
 type LinkedInExperience = {
   companyName?: string;
+  company?: string;
+  employer?: string;
+  organization?: string;
+  subtitle?: string;
   dates?: string;
+  startDate?: string;
+  endDate?: string;
   description?: string;
   jobTitle?: string;
-  location?: string;
+  title?: string;
+  position?: string;
+  role?: string;
+  location?: unknown;
 };
 
 type LinkedInEducation = {
   degree?: string;
+  field?: string;
+  fieldOfStudy?: string;
   schoolName?: string;
+  school?: string;
+  institution?: string;
+  university?: string;
   years?: string;
+  dates?: string;
+  startDate?: string;
+  endDate?: string;
 };
 
 type LinkedInSkill = {
   name?: string;
+  skill?: string;
+  title?: string;
+};
+
+type LinkedInProfileLite = LinkedInProfile & {
+  experience?: unknown;
+  experiences?: unknown;
+  positions?: unknown;
+  workExperience?: unknown;
+  work_experience?: unknown;
+  jobs?: unknown;
+  education?: unknown;
+  educations?: unknown;
+  schools?: unknown;
+  skills?: unknown;
+  topSkills?: unknown;
+  top_skills?: unknown;
+  languages?: unknown;
 };
 
 
@@ -95,6 +130,45 @@ function compact<T>(values: Array<T | null | undefined | false>): T[] {
   return values.filter(Boolean) as T[];
 }
 
+function isStringRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null;
+}
+
+function stringFrom(value: unknown): string {
+  return typeof value === "string" ? clean(value) : "";
+}
+
+function firstString(record: object, keys: string[]): string {
+  const source = record as Record<string, unknown>;
+  for (const key of keys) {
+    const candidate = source[key];
+    if (typeof candidate === "string") {
+      const cleaned = clean(candidate);
+      if (cleaned) return cleaned;
+    }
+  }
+  return "";
+}
+
+function locationLabel(value: unknown): string {
+  if (typeof value === "string") return clean(value);
+  if (!isStringRecord(value)) return "";
+
+  const named = firstString(value, ["name", "default", "full", "locationName"]);
+  if (named) return named;
+
+  const city = firstString(value, ["city"]);
+  const region = firstString(value, ["region", "state"]);
+  const country = firstString(value, ["country"]);
+  const parts = compact([city, region, country]);
+
+  if (parts.length === 3 && /^australia$/i.test(parts[2])) {
+    return `${parts[0]}, ${parts[2]}`;
+  }
+
+  return parts.join(", ");
+}
+
 function formatWebsiteLabel(url?: string): string {
   const raw = clean(url);
   if (!raw) return "";
@@ -117,29 +191,61 @@ function formatContactHandle(url?: string): string {
   }
 }
 
-function formatBylineLocation(location?: string): string {
-  const raw = clean(location);
-  if (!raw) return "";
+function formatBylineLocation(location?: unknown): string {
+  if (typeof location === "string") {
+    const raw = clean(location);
+    if (!raw) return "";
 
-  const parts = raw.split(",").map((part) => clean(part)).filter(Boolean);
-  if (parts.length === 3 && /^australia$/i.test(parts[2])) {
-    return `${parts[0]}, ${parts[2]}`;
+    const parts = raw.split(",").map((part) => clean(part)).filter(Boolean);
+    if (parts.length === 3 && /^australia$/i.test(parts[2])) {
+      return `${parts[0]}, ${parts[2]}`;
+    }
+
+    return raw;
   }
 
-  return raw;
+  return locationLabel(location);
+}
+
+function yearToken(value?: unknown): string {
+  const raw = stringFrom(value);
+  if (!raw) return "";
+  if (/^present$/i.test(raw)) return "Present";
+
+  const yearMatch = raw.match(/\b(19|20)\d{2}\b/);
+  return yearMatch ? yearMatch[0] : raw;
+}
+
+function formatYearRange(start?: unknown, end?: unknown, ongoing = false): string {
+  const startToken = yearToken(start);
+  const endToken = yearToken(end);
+  const normalizedEnd = endToken || (ongoing && startToken ? "Present" : "");
+
+  if (!startToken && !normalizedEnd) return "";
+  if (!startToken) return normalizedEnd;
+  if (!normalizedEnd || startToken === normalizedEnd) return startToken;
+  return `${startToken} — ${normalizedEnd}`;
 }
 
 function mapExperienceItems(experiences: LinkedInExperience[] = []): ReadCvCollectionItem[] {
   return experiences.map((item, index) => {
-    const jobTitle = clean(item.jobTitle);
-    const companyName = clean(item.companyName);
+    const jobTitle = firstString(item, ["jobTitle", "title", "position", "role"]);
+    const companyName = firstString(item, [
+      "companyName",
+      "company",
+      "employer",
+      "organization",
+      "subtitle",
+    ]);
     const heading = compact([jobTitle, companyName ? `at ${companyName}` : ""]).join(" ");
+    const year =
+      formatDateRangeToYearRange(item.dates) || formatYearRange(item.startDate, item.endDate, true);
 
     return {
       id: `exp-${index}`,
-      year: formatDateRangeToYearRange(item.dates),
+      year,
       heading: heading || companyName || "Experience",
-      location: clean(item.location) || null,
+      location: locationLabel(item.location) || null,
       description: clean(item.description) || null,
       attachments: [],
     };
@@ -148,15 +254,16 @@ function mapExperienceItems(experiences: LinkedInExperience[] = []): ReadCvColle
 
 function mapEducationItems(education: LinkedInEducation[] = []): ReadCvCollectionItem[] {
   return education.map((item, index) => {
-    const schoolName = clean(item.schoolName);
-    const degree = clean(item.degree);
+    const schoolName = firstString(item, ["schoolName", "school", "institution", "university"]);
+    const degree = firstString(item, ["degree"]);
     const heading = degree
       ? compact([degree, schoolName ? `at ${schoolName}` : ""]).join(" ")
       : schoolName || "Education";
+    const year = formatDateRangeToYearRange(item.years) || formatYearRange(item.startDate, item.endDate);
 
     return {
       id: `edu-${index}`,
-      year: formatDateRangeToYearRange(item.years),
+      year,
       heading,
       description: null,
       attachments: [],
@@ -164,28 +271,31 @@ function mapEducationItems(education: LinkedInEducation[] = []): ReadCvCollectio
   });
 }
 
-function mapSkillItems(skills: LinkedInSkill[] = []): ReadCvCollectionItem[] {
-  return skills.map((item, index) => ({
-    id: `skill-${index}`,
-    year: "",
-    heading: clean(item.name) || "Skill",
-    attachments: [],
-  }));
-}
+function mapSkillItems(skills: Array<LinkedInSkill | string> = []): ReadCvCollectionItem[] {
+  return skills.map((item, index) => {
+    const heading =
+      typeof item === "string"
+        ? clean(item)
+        : firstString(item, ["name", "skill", "title"]);
 
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null;
+    return {
+      id: `skill-${index}`,
+      year: "",
+      heading: heading || "Skill",
+      attachments: [],
+    };
+  });
 }
 
 function extractScopes(source: LinkedInSource): LinkedInScopes {
-  if (isRecord(source.data)) {
+  if (isStringRecord(source.data)) {
     return source.data as LinkedInScopes;
   }
   return {};
 }
 
 function scopeData<T>(scopeValue: unknown): T | undefined {
-  if (!isRecord(scopeValue)) return undefined;
+  if (!isStringRecord(scopeValue)) return undefined;
 
   if ("data" in scopeValue) {
     const envelope = scopeValue as ScopeEnvelope<T>;
@@ -204,14 +314,47 @@ function arrayFromScope<T>(scopeValue: unknown, key: string): T[] {
   return Array.isArray(value) ? (value as T[]) : [];
 }
 
+function arrayFromProfile<T>(profile: Record<string, unknown>, keys: string[]): T[] {
+  for (const key of keys) {
+    const value = profile[key];
+    if (Array.isArray(value)) return value as T[];
+  }
+  return [];
+}
+
 export function mapLinkedInToReadcv(source: LinkedInSource): ReadCvData {
   // Canonical contract: personal server response envelope { data: { "linkedin.*": { data: ... } } }.
   const scopes = extractScopes(source);
 
-  const profile = (scopeData<LinkedInProfile>(scopes["linkedin.profile"]) ?? {}) as LinkedInProfile;
-  const experiences = arrayFromScope<LinkedInExperience>(scopes["linkedin.experience"], "experiences");
-  const education = arrayFromScope<LinkedInEducation>(scopes["linkedin.education"], "education");
-  const skills = arrayFromScope<LinkedInSkill>(scopes["linkedin.skills"], "skills");
+  const profile = (scopeData<LinkedInProfileLite>(scopes["linkedin.profile"]) ?? {}) as LinkedInProfileLite;
+
+  const experiencesFromScope = arrayFromScope<LinkedInExperience>(
+    scopes["linkedin.experience"],
+    "experiences",
+  );
+  const experiences =
+    experiencesFromScope.length > 0
+      ? experiencesFromScope
+      : arrayFromProfile<LinkedInExperience>(profile, [
+          "experience",
+          "experiences",
+          "positions",
+          "workExperience",
+          "work_experience",
+          "jobs",
+        ]);
+
+  const educationFromScope = arrayFromScope<LinkedInEducation>(scopes["linkedin.education"], "education");
+  const education =
+    educationFromScope.length > 0
+      ? educationFromScope
+      : arrayFromProfile<LinkedInEducation>(profile, ["education", "educations", "schools"]);
+
+  const skillsFromScope = arrayFromScope<LinkedInSkill>(scopes["linkedin.skills"], "skills");
+  const skills =
+    skillsFromScope.length > 0
+      ? skillsFromScope
+      : arrayFromProfile<LinkedInSkill | string>(profile, ["skills", "topSkills", "top_skills"]);
 
   const byline = compact([clean(profile.headline), formatBylineLocation(profile.location)]).join(" in ");
   const linkedInUrl = clean(profile.profileUrl);

@@ -6,22 +6,24 @@ The ReadCV bio template was open-sourced prior to ReadCV's closure in early 2025
 
 ## WTF this app is
 
-This project is the Vana Connect starter wired into a ReadCV-like profile renderer.
+This project is a Vana direct app wired into a ReadCV-like profile renderer.
 
 It has 3 layers:
 
-1. **Vana Connect transport layer** (already in starter)
-   - Creates connect session
-   - Waits for approval in DataConnect
-   - Fetches approved data from personal server
+1. **Vana direct-app transport layer**
+   - Creates a Vana data connection request
+   - Waits for approval in the Vana approval tab
+   - Fetches approved data from the user's Personal Server
 
 2. **LinkedIn data normalization layer** (custom)
-   - Accepts the personal server envelope shape:
+   - Accepts both:
      - `data["linkedin.profile"].data`
      - `data["linkedin.experience"].data`
      - `data["linkedin.education"].data`
      - `data["linkedin.skills"].data`
-   - Treats this as the only supported input contract
+   - Or the direct-flow lite payload under `data["linkedin.profile"].data`
+     with experience/education/skills/languages embedded on the profile
+   - Treats both as the supported input contract
    - Converts it into one internal ReadCV data model
 
 3. **ReadCV presentation layer** (customized starter UI)
@@ -30,9 +32,16 @@ It has 3 layers:
 
 ## Key files and responsibilities
 
-- `src/components/ConnectFlow.tsx`
-  - Connect button + grant/data debug
-  - `useVanaData()` lifecycle (`initConnect`, poll, `fetchData`)
+- `src/components/ProfileHydrationFlow.tsx`
+  - Connect CTA, approval/read state, and final `Profile` render
+  - Uses the direct-app lifecycle from `@opendatalabs/vana-sdk/react`
+
+- `src/lib/vana.ts`
+  - Direct data controller config
+  - App identity, launch environment/network resolution, request binding, and Personal Server retry behavior
+
+- `src/app/api/vana/*`
+  - Creates, polls, and reads direct Vana data connection requests
 
 - `src/lib/mapLinkedInToReadcv.ts`
   - Single mapping boundary from LinkedIn envelope -> ReadCV model
@@ -48,11 +57,15 @@ It has 3 layers:
 
 - `src/app/page.tsx`
   - Current page shell
-  - Renders mapped profile + Connect debug panel
+  - Renders the hydration flow
 
 ## Data shape nuance (important)
 
-The personal server shape is scope-envelope based and must be treated as canonical:
+The live direct-app shape is a single `linkedin.profile` payload that includes
+profile fields plus experience, education, skills, and languages arrays.
+
+The older fixture shape is scope-envelope based and remains supported for
+contract tests:
 
 ```json
 {
@@ -70,18 +83,14 @@ The personal server shape is scope-envelope based and must be treated as canonic
 }
 ```
 
-This is equivalent in content to per-scope files in `data/<scope>/...json`, but wrapped under top-level `data`.
-
 `linkedin.json` in repo root is a **replica fixture** of that real personal-server response shape.  
 Developers should reference `linkedin.json` as the contract sample when editing mapper/UI behavior.
 
 ## Required scopes for full render
 
-Set:
-
-```bash
-VANA_SCOPES=linkedin.experience,linkedin.education,linkedin.skills,linkedin.languages,linkedin.profile
-```
+Live direct flow requests only `linkedin.profile`. The mapper still accepts the
+old replica fixture shape in `linkedin.json` for contract tests and local
+development.
 
 Current UI intentionally ignores languages.
 
@@ -100,11 +109,22 @@ Header primary link behavior:
 ## What to avoid breaking
 
 - Do not change API route interfaces in:
-  - `src/app/api/connect/route.ts`
-  - `src/app/api/data/route.ts`
+  - `src/app/api/vana/request/route.ts`
+  - `src/app/api/vana/status/route.ts`
+  - `src/app/api/vana/data/route.ts`
 - Do not bypass mapper and bind UI directly to raw personal server JSON
 - Keep source-shape handling centralized in `mapLinkedInToReadcv.ts`
-- Assume a single input shape (`source.data["linkedin.*"]`); do not reintroduce legacy root/container handling
+- Keep support for both mapper inputs: direct `linkedin.profile` lite payload and the old split-scope fixture envelope
+
+## Direct-flow freeze guardrail
+
+During the direct-flow migration, treat these UI surfaces as frozen:
+
+- `src/components/readcv/**`
+- `src/app/globals.css`
+- `src/app/fonts/**`
+
+The hardening guard lives on the data side: raw LinkedIn payload -> `src/lib/mapLinkedInToReadcv.ts` -> `ReadCvData` contract tests.
 
 ## If we push this app (production hydration flow)
 
@@ -114,7 +134,7 @@ Goal: user signs in with Vana and their LinkedIn data hydrates the ReadCV templa
 
 1. Page load
 2. CTA: **Connect LinkedIn with Vana**
-3. User approves grant in DataConnect
+3. User approves the data request in Vana
 4. App fetches personal server data
 5. Mapper normalizes data
 6. UI hydrates profile sections
@@ -154,10 +174,8 @@ setInterval(() => {
 
 ## Practical next step
 
-When moving from reference JSON to fully live hydration:
+Before enabling the Vana Web app card, prove the live launch path:
 
-1. Keep `mapLinkedInToReadcv` unchanged
-2. Feed it live `useVanaData().data` envelope after `fetchData()`
-3. Keep reference `linkedin.json` as the contract replica fixture for development
-4. Keep Connect debug panel available behind a details toggle
-
+1. Open the app from Vana Web so `vana_env`/`network` launch params are present.
+2. Approve the `linkedin.profile` request.
+3. Confirm the hydrated ReadCV profile still renders Contact, Work Experience, Education, and Skills.
