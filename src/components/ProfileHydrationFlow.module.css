@@ -12,7 +12,10 @@
   white-space: nowrap;
 }
 
-.reasons,
+.reasons {
+  color: var(--grey3);
+}
+
 .reasonLabel {
   color: var(--grey2);
 }
