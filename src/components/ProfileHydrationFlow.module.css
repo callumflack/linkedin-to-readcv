@@ -13,11 +13,11 @@
 }
 
 .reasons {
-  color: var(--grey3);
+  color: var(--grey2);
 }
 
 .reasonLabel {
-  color: var(--grey2);
+  color: var(--grey3);
 }
 
 .primaryCta {
