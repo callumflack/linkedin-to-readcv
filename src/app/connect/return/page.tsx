@@ -2,6 +2,8 @@ import { readRequestBinding } from "@/lib/vana/binding";
 import { assertLinkedInReadReady } from "@/lib/vana/capability";
 import { returnStateForStatus, type ReturnState } from "@/lib/vana/return-state";
 import { getVanaController, getVanaServerConfig } from "@/lib/vana/server";
+import { isUiDebugEnabled, resolveReturnScenario } from "@/lib/ui-debug/scenarios";
+import UiStateBrowser from "@/components/UiStateBrowser";
 import { cookies } from "next/headers";
 import styles from "@/components/ProfileHydrationFlow.module.css";
 
@@ -11,15 +13,42 @@ export default async function ConnectReturn({
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const params = await searchParams;
+  const debugScenario = resolveReturnScenario(params, isUiDebugEnabled(process.env.NODE_ENV));
+
+  if (debugScenario) {
+    return (
+      <ReturnView
+        state={debugScenario.model}
+        debugScenario={debugScenario.activeId}
+        browser={
+          <UiStateBrowser items={debugScenario.items} />
+        }
+      />
+    );
+  }
+
   const requestId = typeof params.request_id === "string" ? params.request_id : null;
   const state = await authoritativeReturnState(requestId);
 
+  return <ReturnView state={state} />;
+}
+
+function ReturnView({
+  state,
+  debugScenario,
+  browser,
+}: {
+  state: ReturnState;
+  debugScenario?: string;
+  browser?: React.ReactNode;
+}) {
   return (
-    <main className={styles.shell}>
+    <main className={styles.shell} data-debug-scenario={debugScenario}>
       <p className={styles.stateBody}>Verified request status</p>
       <h1 className={styles.stateTitle}>{state.title}</h1>
       <p className={styles.stateBody}>{state.message}</p>
       <a className={styles.ctaButton} href="/">Return to profile</a>
+      {browser}
     </main>
   );
 }

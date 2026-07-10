@@ -7,6 +7,7 @@
   --grey3: #999;
   --wash1: #e5e5e5;
   --wash2: #f2f2f2;
+  --red: #dc2626;
   --transparentBorder: rgba(0, 0, 0, 0.05);
 }
 
@@ -18,6 +19,7 @@
     --grey3: #888;
     --wash1: #4E4E4E;
     --wash2: #383838;
+    --red: #f87171;
     --transparentBorder: rgb(255 255 255 / 0.1);
   }
 }

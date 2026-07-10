@@ -79,6 +79,18 @@
   align-items: center;
 }
 
+.errorRow {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.errorText {
+  color: var(--red);
+}
+
 .shell {
   width: 100%;
   max-width: 540px;
