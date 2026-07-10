@@ -11,7 +11,6 @@ const readCvFont = localFont({
 export const metadata: Metadata = {
   title: "Callum Flack",
   description: "design + code",
-  manifest: "/manifest.json",
 };
 
 export default function RootLayout({

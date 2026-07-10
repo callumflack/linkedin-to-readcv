@@ -1,11 +1,11 @@
 "use client";
 
-import { useVanaData } from "@opendatalabs/connect/react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useDirectVanaConnect } from "@opendatalabs/vana-sdk/react";
+import { useEffect, useMemo, useState } from "react";
 import ArrowRight12 from "@/components/readcv/ArrowRight12";
 import Profile from "@/components/readcv/Profile";
-import { mapLinkedInToReadcv } from "@/lib/mapLinkedInToReadcv";
 import { LINKS } from "@/constants/links";
+import type { ReadCvData } from "@/types/readcv";
 import readcvStyles from "@/components/readcv/Profile.module.css";
 import Image from "next/image";
 import styles from "./ProfileHydrationFlow.module.css";
@@ -13,75 +13,63 @@ import styles from "./ProfileHydrationFlow.module.css";
 type HydrationStage =
   | "idle"
   | "waiting"
-  | "approved_fetching"
   | "hydrating"
   | "ready"
   | "error";
 
 const LOADING_FRAMES = ["", ".", "..", "..."];
 
-function asMappableSource(value: unknown): { data?: unknown } | null {
-  if (typeof value !== "object" || value === null) return null;
-  return value as { data?: unknown };
+async function jsonFetch<T>(path: string, init?: RequestInit): Promise<T> {
+  const response = await fetch(path, init);
+  const body: unknown = await response.json().catch(() => null);
+
+  if (!response.ok) {
+    const message =
+      typeof body === "object" && body !== null && "error" in body && typeof body.error === "string"
+        ? body.error
+        : `${response.status} from ${path}`;
+    throw new Error(message);
+  }
+
+  return body as T;
+}
+
+function withLaunchParams(path: string): string {
+  const launch = new URLSearchParams();
+  const current = new URLSearchParams(window.location.search);
+  const vanaEnv = current.get("vana_env");
+  const network = current.get("network");
+  if (vanaEnv) launch.set("vana_env", vanaEnv);
+  if (network) launch.set("network", network);
+
+  const query = launch.toString();
+  return query ? `${path}${path.includes("?") ? "&" : "?"}${query}` : path;
 }
 
 export default function ProfileHydrationFlow() {
-  const { status, data, error, connectUrl, initConnect, fetchData, isLoading } = useVanaData();
+  const connect = useDirectVanaConnect<ReadCvData>({
+    createRequest: () =>
+      jsonFetch(withLaunchParams("/api/vana/request"), { method: "POST" }),
+    getStatus: (requestId) =>
+      jsonFetch(`/api/vana/status?requestId=${encodeURIComponent(requestId)}`),
+    readResult: (requestId) =>
+      jsonFetch(`/api/vana/read?requestId=${encodeURIComponent(requestId)}`),
+  });
   const [frameIndex, setFrameIndex] = useState(0);
-  const fetchStartedRef = useRef(false);
-  const pendingWindowRef = useRef<Window | null>(null);
-  const shouldAutoOpenConnectRef = useRef(false);
-  const openedConnectUrlRef = useRef<string | null>(null);
-
-  const cv = useMemo(() => {
-    const source = asMappableSource(data);
-    if (!source) return null;
-
-    try {
-      return mapLinkedInToReadcv(source);
-    } catch {
-      return null;
-    }
-  }, [data]);
+  const cv = connect.state.type === "done" ? connect.state.result.data : null;
 
   const stage: HydrationStage = useMemo(() => {
     if (cv) return "ready";
-    if (status === "error" || status === "denied" || status === "expired") return "error";
-    if (status === "approved") return isLoading ? "approved_fetching" : "hydrating";
-    if (status === "connecting" || status === "waiting") return "waiting";
+    if (connect.state.type === "error" || connect.state.type === "done") return "error";
+    if (connect.state.type === "reading") return "hydrating";
+    if (connect.state.type === "creating" || connect.state.type === "awaiting_approval") {
+      return "waiting";
+    }
     return "idle";
-  }, [cv, status, isLoading]);
+  }, [cv, connect.state.type]);
 
   useEffect(() => {
-    if (status === "approved" && data == null && !fetchStartedRef.current) {
-      fetchStartedRef.current = true;
-      void fetchData();
-    }
-  }, [status, data, fetchData]);
-
-  useEffect(() => {
-    if (status === "idle") {
-      fetchStartedRef.current = false;
-    }
-  }, [status]);
-
-  useEffect(() => {
-    if (!connectUrl || !shouldAutoOpenConnectRef.current || openedConnectUrlRef.current === connectUrl) return;
-
-    const pendingWindow = pendingWindowRef.current;
-    if (pendingWindow && !pendingWindow.closed) {
-      pendingWindow.location.href = connectUrl;
-    } else {
-      window.open(connectUrl, "_blank", "noopener,noreferrer");
-    }
-
-    openedConnectUrlRef.current = connectUrl;
-    shouldAutoOpenConnectRef.current = false;
-    pendingWindowRef.current = null;
-  }, [connectUrl]);
-
-  useEffect(() => {
-    if (stage === "waiting" || stage === "approved_fetching" || stage === "hydrating") {
+    if (stage === "waiting" || stage === "hydrating") {
       const timer = window.setInterval(() => {
         setFrameIndex((current) => (current + 1) % LOADING_FRAMES.length);
       }, 350);
@@ -98,11 +86,9 @@ export default function ProfileHydrationFlow() {
 
   if (stage === "error") {
     const errorMessage =
-      status === "denied"
-        ? "Data access was denied in DataConnect."
-        : status === "expired"
-          ? "The connect session expired before approval."
-          : (error ?? "The connection was interrupted.");
+      connect.state.type === "error"
+        ? connect.state.error.message
+        : "The connection was interrupted.";
 
     return (
       <section className={styles.shell}>
@@ -111,8 +97,7 @@ export default function ProfileHydrationFlow() {
         <button
           type="button"
           onClick={() => {
-            fetchStartedRef.current = false;
-            void initConnect();
+            connect.reset();
           }}
           className={styles.ctaButton}
         >
@@ -121,7 +106,7 @@ export default function ProfileHydrationFlow() {
       </section>
     );
   }
-  const isWaitingCta = stage === "waiting" || stage === "approved_fetching" || stage === "hydrating";
+  const isWaitingCta = stage === "waiting" || stage === "hydrating";
 
   return (
     <section className={readcvStyles.profile}>
@@ -149,9 +134,9 @@ export default function ProfileHydrationFlow() {
           <p>
             Personal data should be user-controlled, portable, and reusable across apps.{" "}
             <a href={LINKS.dataconnect} target="_blank" rel="noreferrer">
-              DataConnect
+              Vana
             </a>{" "}
-            lets you approve a verifiable grant once, so now you can render your LI as ReadCV intended.
+            lets you approve a verifiable data request once, so now you can render your LI as ReadCV intended.
           </p>
         </div>
       </section>
@@ -173,7 +158,7 @@ export default function ProfileHydrationFlow() {
               <span>Grant Control</span>
             </div>
             <div className={readcvStyles.experienceContent}>
-              <div className={readcvStyles.title}>Approve and revoke access anytime in DataConnect.</div>
+              <div className={readcvStyles.title}>Approve and revoke access anytime in Vana.</div>
             </div>
           </div>
 
@@ -197,10 +182,7 @@ export default function ProfileHydrationFlow() {
           <button
             type="button"
             onClick={() => {
-              shouldAutoOpenConnectRef.current = true;
-              openedConnectUrlRef.current = null;
-              pendingWindowRef.current = window.open("", "_blank");
-              void initConnect();
+              connect.start();
             }}
             className={styles.primaryCta}
           >
@@ -210,6 +192,16 @@ export default function ProfileHydrationFlow() {
             </span>
           </button>
         )}
+        {connect.state.type === "awaiting_approval" && connect.state.popupBlocked ? (
+          <a
+            href={connect.state.request.approvalUrl}
+            target="_blank"
+            rel="noreferrer"
+            className={styles.secondaryCta}
+          >
+            Open approval
+          </a>
+        ) : null}
         {/* <a
           href={LINKS.dataconnectGithub}
           target="_blank"
