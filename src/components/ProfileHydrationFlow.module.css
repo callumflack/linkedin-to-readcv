@@ -12,6 +12,14 @@
   white-space: nowrap;
 }
 
+.reasons {
+  color: var(--grey2);
+}
+
+.reasonLabel {
+  color: var(--grey3);
+}
+
 .primaryCta {
   appearance: none;
   display: inline-flex;
@@ -69,6 +77,18 @@
 .ctaArrow {
   display: inline-flex;
   align-items: center;
+}
+
+.errorRow {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.errorText {
+  color: var(--red);
 }
 
 .shell {
