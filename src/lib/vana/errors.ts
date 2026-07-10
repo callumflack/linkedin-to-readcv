@@ -26,7 +26,7 @@ export function mapClientError(error: unknown): ClientError {
   if (error instanceof PaymentRequiredError) {
     return {
       kind: "payment_required",
-      error: "The app's escrow balance cannot cover this read. Fund the app identity and retry.",
+      error: "Your LinkedIn profile could not be loaded. Try again.",
       status: 402,
     };
   }
