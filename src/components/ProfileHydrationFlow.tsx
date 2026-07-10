@@ -143,9 +143,9 @@ export default function ProfileHydrationFlow() {
 
       <section className={readcvStyles.profileSection}>
         <h3>Contact</h3>
-        <div className={readcvStyles.contacts}>
+        <div className={`${readcvStyles.contacts} ${styles.reasons}`}>
           <div className={readcvStyles.experience}>
-            <div className={readcvStyles.year}>
+            <div className={`${readcvStyles.year} ${styles.reasonLabel}`}>
               <span>Personal Data</span>
             </div>
             <div className={readcvStyles.experienceContent}>
@@ -154,7 +154,7 @@ export default function ProfileHydrationFlow() {
           </div>
 
           <div className={readcvStyles.experience}>
-            <div className={readcvStyles.year}>
+            <div className={`${readcvStyles.year} ${styles.reasonLabel}`}>
               <span>Grant Control</span>
             </div>
             <div className={readcvStyles.experienceContent}>
@@ -163,7 +163,7 @@ export default function ProfileHydrationFlow() {
           </div>
 
           <div className={readcvStyles.experience}>
-            <div className={readcvStyles.year}>
+            <div className={`${readcvStyles.year} ${styles.reasonLabel}`}>
               <span>Portable Identity</span>
             </div>
             <div className={readcvStyles.experienceContent}>

@@ -12,6 +12,11 @@
   white-space: nowrap;
 }
 
+.reasons,
+.reasonLabel {
+  color: var(--grey2);
+}
+
 .primaryCta {
   appearance: none;
   display: inline-flex;
