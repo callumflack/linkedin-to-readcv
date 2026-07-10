@@ -142,7 +142,7 @@ export default function ProfileHydrationFlow() {
       </section>
 
       <section className={readcvStyles.profileSection}>
-        <h3>Contact</h3>
+        <h3>Why try it</h3>
         <div className={`${readcvStyles.contacts} ${styles.reasons}`}>
           <div className={readcvStyles.experience}>
             <div className={`${readcvStyles.year} ${styles.reasonLabel}`}>
